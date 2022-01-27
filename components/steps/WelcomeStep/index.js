@@ -6,7 +6,7 @@ export const WelcomeStep = () => {
   return (
     <WhiteBlock className={styles.block}>
       <h3 className={styles.title}>
-        <img></img>
+        <img className={styles.img} />
         Welcome to Clubhouse!
       </h3>
       <p>lorem</p>

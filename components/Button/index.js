@@ -1,4 +1,5 @@
 import styles from './Button.module.scss';
+import clsx from 'clsx';
 
 export const Button = ({ children, disabled, color, onClick, className }) => {
   const colors = {
