@@ -1,15 +1,21 @@
 import clsx from 'clsx';
 import React from 'react';
+import { Avatar } from '../../Avatar';
 import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
 import { WhiteBlock } from '../../WhiteBlock';
 import styles from './ChooseAvatarStep.module.scss';
 
-export const ChooseAvatarStep = () => {
-  const inputFileRef = React.useRef();
+export const ChooseAvatarStep: React.FC = () => {
+  const [avatarUrl, setAvatarUrl] = React.useState<string>('')
+  const inputFileRef = React.useRef<HTMLInputElement>(null);
 
-  const handleChangeImage = (e) => {
-    console.log(e.target.files);
+  const handleChangeImage = (event: Event): void => {
+    const file = (event.target as HTMLInputElement).files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file)
+      setAvatarUrl(imageUrl)
+    }
   };
   React.useEffect(() => {
     if (inputFileRef.current) {
@@ -22,7 +28,7 @@ export const ChooseAvatarStep = () => {
       <StepInfo title="Okay, " description="How's this photo" />
       <WhiteBlock className={clsx('m-auto mt-40', styles.whiteBlock)}>
         <div className={styles.avatar}>
-          <Avatar width="120px" height="120px" />
+          <Avatar width="120px" height="120px" src={avatarUrl} />
         </div>
         <div className="mb-30">
           <label htmlFor="image" className="link cup">
