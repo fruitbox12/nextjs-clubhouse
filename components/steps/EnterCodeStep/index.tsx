@@ -12,7 +12,7 @@ export const EnterCodeStep = () => {
     const [codes, setCodes] = React.useState(['', '', '', ''])
     const nextDisabled = codes.some((v) => !v)
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const index = Number(event.target.getAttribute('id')) - 1
+        const index = Number(event.target.getAttribute('id'))
         const value = event.target.value
         setCodes((prev) => {
             const newArr = [...prev]
@@ -42,38 +42,20 @@ export const EnterCodeStep = () => {
                     <StepInfo title="Enter your activate code" />
                     <WhiteBlock className={clsx('mb-30', styles.codeInput)}>
                         <div className={clsx('mb-30', styles.codeInput)}>
-                            <input
-                                type="tel"
-                                placeholder='X'
-                                maxLength={1}
-                                id='1'
-                                onChange={handleChangeInput}
-                                value={codes[0]}
-                            />
-                            <input
-                                type="tel"
-                                placeholder='X'
-                                maxLength={1}
-                                id='2'
-                                onChange={handleChangeInput}
-                                value={codes[1]}
-                            />
-                            <input
-                                type="tel"
-                                placeholder='X'
-                                maxLength={1}
-                                id='3'
-                                onChange={handleChangeInput}
-                                value={codes[2]}
-                            />
-                            <input
-                                type="tel"
-                                placeholder='X'
-                                maxLength={1}
-                                id='4'
-                                onChange={handleChangeInput}
-                                value={codes[3]}
-                            />
+                            {
+                                codes.map((code, index) => (
+                                    <input
+                                        key={index}
+                                        type="tel"
+                                        placeholder='X'
+                                        maxLength={1}
+                                        id={String(index)}
+                                        onChange={handleChangeInput}
+                                        value={code}
+                                    />
+                                ))
+                            }
+
                         </div>
                         <Button onClick={onSubmit} disabled={nextDisabled}>
                             Next

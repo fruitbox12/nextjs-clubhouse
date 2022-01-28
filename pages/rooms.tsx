@@ -4,7 +4,7 @@ export default function RoomsPage() {
     return (
         <>
             <Header />
-
+            <div className="container"></div>
         </>
     )
 }
