@@ -42,3 +42,14 @@
     background-color: darken(#f2f2f2, 2%);
   }
 }
+
+.buttonBlue {
+  background-color: transparent;
+  color: #5677ad;
+  border: solid 2px #5677ad;
+
+  &:hover,
+  &:active {
+    background-color: darken(#f2f2f2, 2%);
+  }
+}
