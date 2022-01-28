@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
+import { MainContext } from '../../../pages';
 import { Avatar } from '../../Avatar';
 import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
@@ -9,6 +10,7 @@ import styles from './ChooseAvatarStep.module.scss';
 export const ChooseAvatarStep: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = React.useState<string>('')
   const inputFileRef = React.useRef<HTMLInputElement>(null);
+  const { onNextStep } = React.useContext(MainContext)
 
   const handleChangeImage = (event: Event): void => {
     const file = (event.target as HTMLInputElement).files[0];
@@ -36,7 +38,7 @@ export const ChooseAvatarStep: React.FC = () => {
           </label>
         </div>
         <input id="image" ref={inputFileRef} type="file" hidden />
-        <Button>
+        <Button onClick={onNextStep}>
           Next
           <img className="d-ib ml-10" />
         </Button>

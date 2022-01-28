@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react'
 import NumberFormat from 'react-number-format';
+import { MainContext } from '../../../pages';
 import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
 import { WhiteBlock } from '../../WhiteBlock';
@@ -14,6 +15,7 @@ type InputValueState = {
 
 export const EnterPhoneStep = () => {
   const [inputValue, setInputValue] = React.useState<InputValueState>({} as InputValueState)
+  const { onNextStep } = React.useContext(MainContext)
 
   const nextDisabled = !inputValue.formattedValue || inputValue.formattedValue.includes('_')
   return (
@@ -34,7 +36,7 @@ export const EnterPhoneStep = () => {
             onValueChange={({ formattedValue, value }) => setInputValue({ formattedValue, value })}
           />
         </div>
-        <Button disabled={nextDisabled}>
+        <Button disabled={nextDisabled} onClick={onNextStep}>
           Next
           <img className='d-ib ml-10' />
         </Button>
