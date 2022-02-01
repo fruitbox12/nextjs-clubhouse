@@ -1,0 +1,31 @@
+.card {
+  padding: 30px 35px !important;
+  min-height: 170px !important;
+  width: 380px !important;
+  box-sizing: border-box !important;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.title {
+  margin: 0;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 30px;
+  width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.users {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 5px;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+}
