@@ -1,22 +1,34 @@
-import clsx from "clsx"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import { BackButton } from "../../components/BackButton"
-import { Button } from "../../components/Button"
 import { Header } from "../../components/Header"
-import { Profile } from "../../components/Profile"
 import { Room } from "../../components/Room"
-
-export default function ProfilePage() {
-    const router = useRouter()
-    const { id } = router.query
+import Axios from '../../core/axios'
+export default function ProfilePage({ room }) {
     return (
         <>
             <Header />
             <div className="container mt-40">
                 <BackButton title="All rooms" href="/rooms" />
             </div>
-            <Room />
+            <Room title={room.title} />
         </>
     )
+}
+
+export const getServerSideProps = async (ctx) => {
+    try {
+        const { data } = await Axios.get('rooms.json')
+        const roomId = ctx.query.id
+        const room = data.find((obj) => obj.id === roomId)
+        return {
+            props: {
+                room
+            }
+        }
+    } catch (error) {
+    }
+    return {
+        props: {
+
+        }
+    }
 }

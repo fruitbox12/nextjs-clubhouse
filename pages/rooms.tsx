@@ -20,7 +20,7 @@ export default function RoomsPage({ rooms }) {
                 <div className="grid mt-30">
                     {
                         rooms.map(obj => (
-                            <Link key={obj.id} href={obj.link}>
+                            <Link key={obj.id} href={`/rooms/${obj.id}`}>
                                 <a>
                                     <ConversationCard
                                         title={obj.title}
