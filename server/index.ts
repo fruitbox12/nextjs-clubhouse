@@ -5,16 +5,22 @@ dotenv.config({
     path: 'server/.env',
 })
 
-import {passport } from './core/passport'
+
+import { passport } from './core/passport'
+
 
 
 const app = express()
 
+app.use(passport.initialize())
+
 app.get(
-    '/auth/github',
+    '/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     (req,res)=>{
-        res.send('/')
+        console.log('aaaa');
+        
+        res.json(req.user)
     }
 )
 
