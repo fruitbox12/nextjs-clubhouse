@@ -14,13 +14,13 @@ const app = express()
 
 app.use(passport.initialize())
 
+app.get('/auth/github',passport.authenticate('github'))
+
 app.get(
     '/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     (req,res)=>{
-        console.log('aaaa');
-        
-        res.json(req.user)
+        res.json(`<script>window.opener.postMessage('${JSON.stringify(req.user)}','*');window.close();</script>`)
     }
 )
 
