@@ -2,6 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import multer from 'multer'
 import cors from 'cors'
+import sharp from 'sharp'
+import fs from 'fs'
 import {nanoid} from 'nanoid'
 dotenv.config({
     path: 'server/.env',
@@ -28,7 +30,19 @@ app.use(cors())
 app.use(passport.initialize())
 
 app.get('upload', upload.single('photo'), (req, res)=>{
-    res.json(req.file)
+    const filePath = req.file.path
+    sharp(filePath)
+    .resize(150, 150)
+    .toFormat('jpeg')
+    .toFile(filePath.replace('.png','.jpeg'), (err)=>{
+        if(err){
+            throw err
+        }
+        fs.unlinkSync(filePath)
+        res.json({
+            url: `/avatars/${req.file.filename.replace('.png','.jpeg')}`
+        })
+    })
 })
 
 app.get('/auth/github',passport.authenticate('github'))
