@@ -6,31 +6,28 @@ import { StepInfo } from '../../StepInfo';
 import { WhiteBlock } from '../../WhiteBlock';
 import styles from './TwitterStep.module.scss';
 
-export const TwitterStep: React.FC = () => {
+export const GithubStep: React.FC = () => {
 
-  const { onNextStep } = React.useContext(MainContext)
+  const { onNextStep, setUserData } = React.useContext(MainContext)
 
   const onClickAuth = () => {
-    const win = window.open('http://localhost:3001/auth/github', 'Auth', 'width=600,height=500,status=yes,toolbar=no,menubar=no,location=no')
+    window.open('http://localhost:3001/auth/github', 'Auth', 'width=600,height=500,status=yes,toolbar=no,menubar=no,location=no')
 
-    const timer = setInterval(() => {
-      if (win.closed) {
-        clearInterval(timer)
-        onNextStep()
-      }
-
-    }, 1000)
   }
   React.useEffect(() => {
-    window.addEventListener('message', (data) => {
-      console.log(data);
-
+    window.addEventListener('message', ({ data }) => {
+      const user: string = data
+      if (typeof user === 'string' && user.includes('avatarUrl')) {
+        const json = JSON.parse(user)
+        setUserData(json)
+        onNextStep()
+      }
     })
   }, [])
 
   return (
     <div className={styles.block}>
-      <StepInfo title="Do you want import info from Twitter?" />
+      <StepInfo title="Do you want import info from Github?" />
       <WhiteBlock className={clsx('m-auto mt-40', styles.whiteBlock)}>
         <div className={styles.avatar}>
           <b>AD</b>
@@ -39,8 +36,8 @@ export const TwitterStep: React.FC = () => {
           </svg>
         </div>
         <h2 className="mb-40">Archakov Dennis</h2>
-        <Button onClick={onClickAuth}>
-          <img alt="Twitter logo" />
+        <Button onClick={onClickAuth} className={clsx(styles.button, 'd-i-flex align-items-center')}>
+          <img className="d-ib mr-10" alt="Github logo" />
           Import from Twitter
           <img className="d-ib ml-10" alt="Twitter logo" />
         </Button>
