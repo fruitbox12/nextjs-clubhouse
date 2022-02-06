@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
+import { Axios } from '../../../core/axios';
 import { MainContext } from '../../../pages';
 import { Avatar } from '../../Avatar';
 import { Button } from '../../Button';
@@ -7,16 +8,28 @@ import { StepInfo } from '../../StepInfo';
 import { WhiteBlock } from '../../WhiteBlock';
 import styles from './ChooseAvatarStep.module.scss';
 
+const uploadFile = async (file: File) => {
+  const formData = new FormData()
+  formData.append('photo', file)
+  const { data } = await Axios.post('upload', formData, {
+    headers: {
+      'contentType': 'multipart/form-data'
+    }
+  })
+
+  return data
+}
 export const ChooseAvatarStep: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = React.useState<string>('')
   const inputFileRef = React.useRef<HTMLInputElement>(null);
   const { onNextStep } = React.useContext(MainContext)
 
-  const handleChangeImage = (event: Event): void => {
+  const handleChangeImage = async (event: Event) => {
     const file = (event.target as HTMLInputElement).files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file)
       setAvatarUrl(imageUrl)
+      const data = await uploadFile(file)
     }
   };
   React.useEffect(() => {
