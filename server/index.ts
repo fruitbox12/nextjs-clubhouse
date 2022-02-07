@@ -57,7 +57,32 @@ app.get('upload', upload.single('photo'), (req, res)=>{
 
 const randomCode = (max: number = 9999, min: number= 1000) => Math.floor(Math.random() * (max - min + 1)) + min
 
-app.get('/auth/phone',passport.authenticate('jwt',{session: false}), async(req,res)=>{
+app.get('/auth/sms/activate',passport.authenticate('jwt',{session: false}), async(req,res)=>{
+    try {
+        const smsCode = req.query.code
+        const userId = req.user.id
+        if(!smsCode){
+            return res.status(400).send()
+        }
+        const whereQuery = {code: smsCode, user_id: userId}
+        const findCode = await Code.findOne({
+            where: whereQuery
+        })
+        if(findCode){
+            await Code.destroy({
+                where: whereQuery
+            })
+            return res.status(201).send()
+        }else{
+            throw new Error('not found')
+        }
+    } catch (error) {
+        res.status(500).send()
+    }
+})
+
+
+app.get('/auth/sms',passport.authenticate('jwt',{session: false}), async(req,res)=>{
     const phone = req.query.phone
     const userId = req.user.id
     if(!phone){
@@ -70,7 +95,7 @@ app.get('/auth/phone',passport.authenticate('jwt',{session: false}), async(req,r
             code: randomCode(),
             user_id: userId
         })
-        
+        res.status(201).send()
     } catch (error) {
         res.status(500).send()
     }
