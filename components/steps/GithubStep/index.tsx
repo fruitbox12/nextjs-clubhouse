@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import React from 'react';
-import { MainContext } from '../../../pages';
+import { MainContext, UserData } from '../../../pages';
 import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
 import { WhiteBlock } from '../../WhiteBlock';
+import Cookies from 'js-cookie';
 import styles from './TwitterStep.module.scss';
 
 export const GithubStep: React.FC = () => {
@@ -18,9 +19,10 @@ export const GithubStep: React.FC = () => {
     window.addEventListener('message', ({ data }) => {
       const user: string = data
       if (typeof user === 'string' && user.includes('avatarUrl')) {
-        const json = JSON.parse(user)
+        const json: UserData = JSON.parse(user)
         setUserData(json)
         onNextStep()
+        Cookies.set('token', json.token)
       }
     })
   }, [])

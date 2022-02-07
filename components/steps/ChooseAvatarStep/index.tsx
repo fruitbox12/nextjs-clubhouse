@@ -22,7 +22,7 @@ const uploadFile = async (file: File): Promise<{ url: string }> => {
 export const ChooseAvatarStep: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = React.useState<string>('')
   const inputFileRef = React.useRef<HTMLInputElement>(null);
-  const { onNextStep } = React.useContext(MainContext)
+  const { onNextStep, setFieldValue, userData } = React.useContext(MainContext)
 
   const handleChangeImage = async (event: Event) => {
     const target = event.target as HTMLInputElement
@@ -31,6 +31,7 @@ export const ChooseAvatarStep: React.FC = () => {
       const imageUrl = URL.createObjectURL(file)
       const data = await uploadFile(file)
       setAvatarUrl(data.url)
+      setFieldValue('avatarUrl', data.url)
       target.value = ''
     }
   };
@@ -42,7 +43,7 @@ export const ChooseAvatarStep: React.FC = () => {
 
   return (
     <div className={styles.block}>
-      <StepInfo title="Okay, " description="How's this photo" />
+      <StepInfo title={`Okay, ${userData?.fullname}`} description="How's this photo" />
       <WhiteBlock className={clsx('m-auto mt-40', styles.whiteBlock)}>
         <div className={styles.avatar}>
           <Avatar width="120px" height="120px" src={avatarUrl} />
