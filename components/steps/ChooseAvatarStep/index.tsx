@@ -20,9 +20,10 @@ const uploadFile = async (file: File): Promise<{ url: string }> => {
   return data
 }
 export const ChooseAvatarStep: React.FC = () => {
+  const { onNextStep, setFieldValue, userData } = React.useContext(MainContext)
+  const avatarLetters = userData.fullname.split(' ').map(s => s[0]).join('')
   const [avatarUrl, setAvatarUrl] = React.useState<string>('')
   const inputFileRef = React.useRef<HTMLInputElement>(null);
-  const { onNextStep, setFieldValue, userData } = React.useContext(MainContext)
 
   const handleChangeImage = async (event: Event) => {
     const target = event.target as HTMLInputElement

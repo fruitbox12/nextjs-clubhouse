@@ -1,44 +1,19 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import multer from 'multer'
 import cors from 'cors'
-
 import sharp from 'sharp'
 import fs from 'fs'
-import {nanoid, random} from 'nanoid'
-dotenv.config({
-    path: 'server/.env',
-})
-
-
+dotenv.config({  path: 'server/.env',})
 import { passport } from './core/passport'
-import { UserData } from '../pages'
 import AuthController from './controllers/AuthController'
-
-declare global{
-    namespace Express{
-        interface User extends UserData{
-
-        }
-    }
-}
-
+import { uploader } from './core/uploader'
 const app = express()
-const upload = multer({ storage: multer.diskStorage({
-    destination: (req, file, cb)=>{
-        cb(null, 'public/avatars')
-    },
-    filename: (req,file,cb)=>{
-        cb(null, file.fieldname + nanoid(6)) + '.' + file.mimetype.split('/').pop()
-    }
-})
-})
 
 app.use(cors())
 app.use(express.json())
 app.use(passport.initialize())
 
-app.get('upload', upload.single('photo'), (req, res)=>{
+app.get('upload', uploader.single('photo'), (req, res)=>{
     const filePath = req.file.path
     sharp(filePath)
     .resize(150, 150)
