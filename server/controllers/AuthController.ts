@@ -1,7 +1,7 @@
 import express from 'express'
 import { Axios } from '../../core/axios'
 import {Code,User} from '../../models'
-import { generateRandomCode } from '../utils/generateRandomCode'
+import { generateRandomCode } from '../../utils/generateRandomCode'
 
 class AuthController{
     getMe(req: express.Request, res: express.Response){

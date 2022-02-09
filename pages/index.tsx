@@ -5,6 +5,7 @@ import { GithubStep } from '../components/steps/GithubStep';
 import { ChooseAvatarStep } from '../components/steps/ChooseAvatarStep';
 import { EnterPhoneStep } from '../components/steps/EnterPhoneStep';
 import { EnterCodeStep } from '../components/steps/EnterCodeStep';
+import { checkAuth } from '../utils/checkAuth';
 
 const stepsComponents = {
   0: WelcomeStep,
@@ -90,4 +91,20 @@ export default function Home() {
       <Step />
     </MainContext.Provider>
   );
+}
+
+export const getServerSideProps = async (ctx) => {
+  try {
+    const user = await checkAuth(ctx)
+    if (user) {
+      return {
+        props: {},
+        redirect: {
+          destination: '/rooms',
+          permanent: false,
+        }
+      }
+    }
+  } catch (error) { }
+  return { props: {} }
 }

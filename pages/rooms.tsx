@@ -1,14 +1,19 @@
+import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../components/Button";
 import { ConversationCard } from "../components/ConversationCard";
 import { Header } from "../components/Header";
-
-import Axios from '../core/axios'
+import { Axios } from "../core/axios";
+import { checkAuth } from "../utils/checkAuth";
 
 export default function RoomsPage({ rooms }) {
     return (
         <>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+                <title>Create Next App</title>
+            </Head>
             <Header />
             <div className="container">
                 <div className="mt-40 d-flex align-items-center justify-content-between">
@@ -39,11 +44,22 @@ export default function RoomsPage({ rooms }) {
     )
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (ctx) => {
     try {
+        const user = await checkAuth(ctx)
+
+        if (!user) {
+            return {
+                props: {},
+                redirect: {
+                    destination: '/'
+                }
+            }
+        }
         const { data } = await Axios.get('/rooms.json')
         return {
             props: {
+                user,
                 rooms: data
             }
         }
