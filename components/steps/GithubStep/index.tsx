@@ -19,6 +19,7 @@ export const GithubStep: React.FC = () => {
     window.addEventListener('message', ({ data }) => {
       const user: string = data
       if (typeof user === 'string' && user.includes('avatarUrl')) {
+        Cookies.remove('token')
         const json: UserData = JSON.parse(user)
         setUserData(json)
         onNextStep()

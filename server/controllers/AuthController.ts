@@ -1,6 +1,6 @@
 import express from 'express'
 import { Axios } from '../../core/axios'
-import {Code} from '../../models'
+import {Code,User} from '../../models'
 import { generateRandomCode } from '../utils/generateRandomCode'
 
 class AuthController{
@@ -17,7 +17,9 @@ class AuthController{
             const smsCode = req.query.code
             const userId = req.user.id
             if(!smsCode){
-                return res.status(400).send()
+                return res.status(400).json({
+                    message:'Введите код активации'
+                })
             }
             const whereQuery = {code: smsCode, user_id: userId}
             const findCode = await Code.findOne({
@@ -27,12 +29,13 @@ class AuthController{
                 await Code.destroy({
                     where: whereQuery
                 })
+                await User.update({isActive: 1 },{where: {id: userId}})
                 return res.status(201).send()
             }else{
-                throw new Error('not found')
+                res.status(400).json({message: 'Код не найден'})
             }
         } catch (error) {
-            res.status(500).send()
+            res.status(500).json({message: 'Ошибка при активации'})
         }
     }
 
@@ -41,7 +44,9 @@ class AuthController{
         const userId = req.user.id
         const smsCode = generateRandomCode()
         if(!phone){
-            return res.status(400).send()
+            return res.status(400).json({
+                message: 'Номер телефона не указан'
+            })
         }
         try {
             //await Axios.get('')

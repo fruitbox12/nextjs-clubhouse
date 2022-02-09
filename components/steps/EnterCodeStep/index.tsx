@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { Axios } from '../../../core/axios'
 import { Button } from '../../Button'
 import { StepInfo } from '../../StepInfo'
 import { WhiteBlock } from '../../WhiteBlock'
@@ -27,10 +28,11 @@ export const EnterCodeStep = () => {
     const onSubmit = async () => {
         try {
             setIsLoading(true)
-            await Axios.get('/')
+            await Axios.get(`/auth/sms/activate?code=${codes.join('')}`)
             router.push('/rooms')
         } catch (error) {
             alert(error)
+            setCodes(['', '', '', ''])
         }
         setIsLoading(false)
     }

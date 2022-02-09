@@ -17,14 +17,15 @@ type InputValueState = {
 export const EnterPhoneStep = () => {
   const [inputValue, setInputValue] = React.useState<InputValueState>({} as InputValueState)
   const [isLoading, setIsLoading] = React.useState(false)
-  const { onNextStep } = React.useContext(MainContext)
+  const { onNextStep, setFieldValue } = React.useContext(MainContext)
 
   const nextDisabled = !inputValue.formattedValue || inputValue.formattedValue.includes('_')
 
   const onSubmit = async () => {
     try {
       setIsLoading(true)
-      await Axios.get('/auth/sms')
+      await Axios.get(`/auth/sms?phone=${inputValue.value}`)
+      setFieldValue('phone', inputValue.value)
       onNextStep()
     } catch (error) {
       console.log(error);

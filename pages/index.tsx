@@ -35,8 +35,30 @@ export type UserData = {
 
 export const MainContext = React.createContext<MainContextProps>({} as MainContextProps)
 
+const getUserData = (): UserData | null => {
+  try {
+    return JSON.parse(window.localStorage.getItem('userData'))
+  } catch (error) {
+    return null
+  }
+}
+
+const getFormStep = () => {
+  if (typeof window !== 'undefined') {
+    const json = getUserData()
+    if (json) {
+      if (json.phone) {
+        return 5
+      } else {
+        return 4
+      }
+    }
+  }
+  return 0
+}
+
 export default function Home() {
-  const [step, setStep] = React.useState<number>(0)
+  const [step, setStep] = React.useState<number>(getFormStep())
   const [userData, setUserData] = React.useState<UserData | undefined>()
   const Step = stepsComponents[step]
 
@@ -49,6 +71,19 @@ export default function Home() {
       [field]: value
     }))
   }
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const json = getUserData()
+      if (json) {
+        setUserData(json)
+        setStep(getFormStep())
+      }
+    }
+  }, [])
+
+  React.useEffect(() => {
+    window.localStorage.setItem('userData', userData ? JSON.stringify(userData) : '')
+  }, [userData])
 
   return (
     <MainContext.Provider value={{ step, onNextStep, userData, setUserData, setFieldValue }}>
