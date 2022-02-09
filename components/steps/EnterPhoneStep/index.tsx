@@ -51,7 +51,7 @@ export const EnterPhoneStep = () => {
             onValueChange={({ formattedValue, value }) => setInputValue({ formattedValue, value })}
           />
         </div>
-        <Button disabled={isLoading || nextDisabled} onClick={onNextStep}>
+        <Button disabled={isLoading || nextDisabled} onClick={onSubmit}>
           {isLoading ? 'Loading...' : <>
             Next
             <img className='d-ib ml-10' />

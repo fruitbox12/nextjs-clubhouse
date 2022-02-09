@@ -39,14 +39,24 @@ class AuthController{
     async sendSMS(req: express.Request, res: express.Response){
         const phone = req.query.phone
         const userId = req.user.id
+        const smsCode = generateRandomCode()
         if(!phone){
             return res.status(400).send()
         }
         try {
-            const data = await Axios.get('')
-        
-            const code = await Code.create({
-                code: generateRandomCode(),
+            //await Axios.get('')
+            const findCode = await Code.findOne({
+                where: {
+                    user_id: userId
+                }
+            })
+
+            if(findCode){
+                return res.status(400).json({message: 'Код уже был отправлен'})
+            }
+
+             await Code.create({
+                code: smsCode,
                 user_id: userId
             })
             res.status(201).send()
