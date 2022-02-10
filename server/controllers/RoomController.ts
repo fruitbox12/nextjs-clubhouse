@@ -29,6 +29,44 @@ class RoomController{
             res.status(500).json({message: 'Error', error})
         }
     }
+
+    async show(req: express.Request, res: express.Response){
+        try {
+            const roomId = req.params.id
+            
+            if(isNaN(Number(roomId))){
+                return res.status(404).json({message: 'Комната не найдена'})
+            }
+
+            const room = await Room.findByPk(roomId)
+            
+            if(!room){
+                return res.status(404).json({message: 'Комната не найдена'})
+            }
+
+            res.json(room)
+        } catch (error) {
+            res.json(500).send()
+        }
+    }
+
+    async delete(req: express.Request, res: express.Response){
+        try {
+            const roomId = req.params.id
+            
+            if(isNaN(Number(roomId))){
+                return res.status(404).json({message: 'Комната не найдена'})
+            }
+
+            await Room.destroy({
+                where: {id: roomId}
+            })
+            res.send()
+
+        } catch (error) {
+            res.json(500).send()
+        }
+    }
 }
 
 export default new RoomController

@@ -15,9 +15,9 @@ app.use(express.json())
 app.use(passport.initialize())
 
 app.get('/rooms', passport.authenticate('jwt',{session: false}), RoomController.index)
-app.post('/rooms',()=>{})
-app.post('/rooms/:id',()=>{})
-app.delete('/rooms/:id',()=>{})
+app.post('/rooms',passport.authenticate('jwt',{session: false}), RoomController.create)
+app.get('/rooms/:id',passport.authenticate('jwt',{session: false}), RoomController.show)
+app.delete('/rooms/:id',passport.authenticate('jwt',{session: false}), RoomController.delete)
 
 
 app.get('upload', uploader.single('photo'), (req, res)=>{
