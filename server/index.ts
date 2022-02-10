@@ -6,12 +6,19 @@ import fs from 'fs'
 dotenv.config({  path: 'server/.env',})
 import { passport } from './core/passport'
 import AuthController from './controllers/AuthController'
+import RoomController from './controllers/RoomController'
 import { uploader } from './core/uploader'
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 app.use(passport.initialize())
+
+app.get('/rooms', passport.authenticate('jwt',{session: false}), RoomController.index)
+app.post('/rooms',()=>{})
+app.post('/rooms/:id',()=>{})
+app.delete('/rooms/:id',()=>{})
+
 
 app.get('upload', uploader.single('photo'), (req, res)=>{
     const filePath = req.file.path
