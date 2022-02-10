@@ -1,7 +1,7 @@
 import App, { AppContext } from 'next/app';
 import withRedux from 'next-redux-wrapper'
 import '../styles/globals.scss';
-import { makeStore } from '../redux/store';
+import { makeStore, wrapper } from '../redux/store';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }: AppContext) {
@@ -15,4 +15,4 @@ class MyApp extends App {
   }
 }
 
-export default withRedux(makeStore)(MyApp);
+export default wrapper.withRedux(MyApp);

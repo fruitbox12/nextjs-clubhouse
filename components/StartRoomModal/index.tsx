@@ -5,26 +5,25 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import { RoomApi, RoomType } from '../../api/RoomApi'
 import { Button } from '../Button'
+import { useDispatch } from 'react-redux'
+import { fetchCreateRooms } from '../../redux/slices/roomsSlices'
+import { useAsyncAction } from '../../hooks/useAction'
 
 interface StartRoomModalProps {
     onClose: () => void;
 }
 
 export const StartRoomModal: React.FC<StartRoomModalProps> = ({ onClose }) => {
-    const [roomType, setRoomType] = React.useState('open')
     const router = useRouter()
     const [title, setTitle] = React.useState('')
     const [type, setType] = React.useState<RoomType>('open')
+    const createRoom = useAsyncAction(fetchCreateRooms)
     const onSubmit = async () => {
-        try {
-            if (!title) {
-                return alert('Укажите заголовок комнаты')
-            }
-            const room = await RoomApi(Axios).createRoom({ title, type })
-            router.push(`/rooms/${room.id}`)
-        } catch (error) {
-            alert('Ошибка при создании комнаты')
+        if (!title) {
+            return alert('Укажите заголовок комнаты')
         }
+        const data = await createRoom({ title, type })
+        router.push(`rooms/${data.id}`)
     }
 
     return (
