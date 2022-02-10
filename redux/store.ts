@@ -1,8 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Store } from "@reduxjs/toolkit";
 import { roomsReducer } from "./slices/roomsSlices";
 
-export const store = configureStore({
-    reducer:{
-        rooms: roomsReducer,
-    }
+const rootReducer = combineReducers({
+    rooms: roomsReducer
 })
+
+export const makeStore = (): Store => configureStore({reducer: rootReducer})
