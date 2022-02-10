@@ -5,10 +5,16 @@ import { Button } from "../components/Button";
 import { ConversationCard } from "../components/ConversationCard";
 import { StartRoomModal } from "../components/StartRoomModal";
 import { Header } from "../components/Header";
-import { Axios } from "../core/axios";
 import { checkAuth } from "../utils/checkAuth";
+import { Api } from "../api";
+import { Room, RoomType } from "../api/RoomApi";
+import { GetServerSideProps, NextPage } from "next";
 
-export default function RoomsPage({ rooms }) {
+interface RoomPageProps {
+    rooms: Room[]
+}
+
+const RoomsPage: NextPage<RoomPageProps> = ({ rooms }) => {
     const [visibleModal, setVisibleModal] = React.useState(false)
 
     return (
@@ -33,10 +39,9 @@ export default function RoomsPage({ rooms }) {
                                 <a>
                                     <ConversationCard
                                         title={obj.title}
-                                        guests={obj.guests}
-                                        avatars={obj.avatars}
-                                        guestsCount={obj.guestsCount}
-                                        speakersCount={obj.speakerCount}
+                                        speakers={obj.speakers || []}
+                                        avatars={[]}
+                                        listenersCount={obj.listenersCount}
                                     />
                                 </a>
                             </Link>
@@ -48,23 +53,25 @@ export default function RoomsPage({ rooms }) {
     )
 }
 
-export const getServerSideProps = async (ctx) => {
+export default RoomsPage
+
+export const getServerSideProps: GetServerSideProps<RoomPageProps> = async (ctx) => {
     try {
         const user = await checkAuth(ctx)
-
         if (!user) {
             return {
                 props: {},
                 redirect: {
+                    permanent: false,
                     destination: '/'
                 }
             }
         }
-        const { data } = await Axios.get('/rooms.json')
+        const rooms = await Api(ctx).getRooms()
         return {
             props: {
                 user,
-                rooms: data
+                rooms
             }
         }
     } catch (error) {
