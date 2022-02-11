@@ -18,8 +18,22 @@ const io = socket(server,{
     }
 })
 
-io.on('connection',(socket)=>{
+const rooms: Record<string, any> = {}
 
+io.on('connection',(socket)=>{
+    socket.on('CLIENT@ROOMS:JOIN',({user, roomId})=>{
+        socket.join(`room/${roomId}`)
+        socket.to(`room/${roomId}`).emit('SERVER@ROOMS:JOIN',Object.values(rooms).filter((obj)=>obj.roomId ===roomId).map(obj => obj.user))
+        rooms[socket.id] = {roomId, user}
+    })
+
+    socket.on('disconnect',()=>{
+        if(rooms[socket.id]){
+            const {roomId, user} = rooms[socket.id]
+            socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:LEAVE',user)
+            delete rooms[socket.id]
+        }
+    })
 })
 
 app.use(cors())
@@ -48,7 +62,7 @@ app.get('upload', uploader.single('photo'), (req, res)=>{
     })
 })
 
-app.get('/auth/sms/activate',passport.authenticate('jwt',{session: false}), AuthController.activate)
+app.post('/auth/sms/activate',passport.authenticate('jwt',{session: false}), AuthController.activate)
 app.get('/auth/sms',passport.authenticate('jwt',{session: false}), AuthController.sendSMS)
 app.get('/auth/github',passport.authenticate('github'))
 app.get('/auth/me',passport.authenticate('jwt', {session: false},AuthController.getMe))

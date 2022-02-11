@@ -4,12 +4,10 @@ import { Header } from "../../components/Header"
 import { Room } from "../../components/Room"
 import { wrapper } from "../../redux/store"
 import { checkAuth } from "../../utils/checkAuth"
-import io from 'socket.io-client'
 import React from "react"
 
-const socket = io('http://localhost:3001')
 
-export default function RoomPage({ room }) {
+export default function RoomPage({ room, user }) {
 
     return (
         <>
@@ -38,7 +36,8 @@ export const getServerSideProps = wrapper.getServerSideProps(async (ctx) => {
         const room = await Api(ctx).getRoom(roomId)
         return {
             props: {
-                room
+                room,
+                user,
             }
         }
     } catch (error) {

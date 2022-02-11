@@ -14,14 +14,14 @@ class AuthController{
 
     async activate(req: express.Request, res: express.Response){
         try {
-            const smsCode = req.query.code
+            const {code, user} = req.body
             const userId = req.user.id
-            if(!smsCode){
+            if(!code){
                 return res.status(400).json({
                     message:'Введите код активации'
                 })
             }
-            const whereQuery = {code: smsCode, user_id: userId}
+            const whereQuery = {code, user_id: userId}
             const findCode = await Code.findOne({
                 where: whereQuery
             })
@@ -29,7 +29,7 @@ class AuthController{
                 await Code.destroy({
                     where: whereQuery
                 })
-                await User.update({isActive: 1 },{where: {id: userId}})
+                await User.update({...user, isActive: 1 },{where: {id: userId}})
                 return res.status(201).send()
             }else{
                 res.status(400).json({message: 'Код не найден'})

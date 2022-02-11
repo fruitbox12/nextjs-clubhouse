@@ -1,19 +1,45 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectUserData } from '../../redux/selectors';
 import { Button } from '../Button';
+import { Socket } from 'socket.io-client'
 import { Speaker, SpeakerProps } from '../Speaker';
 
 import styles from './Room.module.scss'
+import { UserData } from '../../pages';
 
 interface RoomProps {
     title: string;
 }
 
-
-
 export const Room: React.FC<RoomProps> = ({ title }) => {
-    const [users, setUsers] = React.useState<SpeakerProps[]>([])
+    const router = useRouter()
+    const user = useSelector(selectUserData)
+    const [users, setUsers] = React.useState<UserData[]>([])
+    const socketRef = React.useRef<Socket>()
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            socketRef.current = io('http://localhost:3001')
+            socketRef.current.emit('CLIENT@ROOMS:JOIN', {
+                user,
+                roomId: router.query.id
+            })
+            socketRef.current.on('SERVER@ROOMS:JOIN', users => {
+                setUsers(users)
+            })
+            socketRef.current.on('SERVER@ROOMS:LEAVE', (user: UserData) => {
+                setUsers(prev => prev.filter(obj => obj.id !== user.id))
+            })
+
+            setUsers(prev => [...prev, user])
+        }
+        return () => {
+            socketRef.current.disconnect()
+        }
+    }, [])
+
     return (
         <div className={styles.wrapper}>
             <div className="d-flex align-items-center justify-content-between">
@@ -32,10 +58,18 @@ export const Room: React.FC<RoomProps> = ({ title }) => {
             <div className="users">
                 {
                     users.map((obj) => (
-                        <Speaker {...obj} />
+                        <Speaker key={obj.fullname} {...obj} />
                     ))
                 }
             </div>
         </div>
     );
 };
+function useRouter() {
+    throw new Error('Function not implemented.');
+}
+
+function io(arg0: string): Socket {
+    throw new Error('Function not implemented.');
+}
+

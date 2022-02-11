@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { Axios } from '../../../core/axios'
+import { MainContext } from '../../../pages'
 import { Button } from '../../Button'
 import { StepInfo } from '../../StepInfo'
 import { WhiteBlock } from '../../WhiteBlock'
@@ -12,6 +13,7 @@ export const EnterCodeStep = () => {
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [codes, setCodes] = React.useState(['', '', '', ''])
     const nextDisabled = codes.some((v) => !v)
+    const { userData } = React.useContext(MainContext)
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const index = Number(event.target.getAttribute('id'))
         const value = event.target.value
@@ -28,7 +30,10 @@ export const EnterCodeStep = () => {
     const onSubmit = async () => {
         try {
             setIsLoading(true)
-            await Axios.get(`/auth/sms/activate?code=${codes.join('')}`)
+            await Axios.post('/auth/sms/activate', {
+                code: codes.join(''),
+                user: userData
+            })
             router.push('/rooms')
         } catch (error) {
             alert(error)
