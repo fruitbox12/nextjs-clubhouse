@@ -1,5 +1,8 @@
 import clsx from 'clsx';
+import Link from 'next/link';
 import React from 'react';
+import { Button } from '../Button';
+import { Speaker, SpeakerProps } from '../Speaker';
 
 import styles from './Room.module.scss'
 
@@ -7,7 +10,10 @@ interface RoomProps {
     title: string;
 }
 
+
+
 export const Room: React.FC<RoomProps> = ({ title }) => {
+    const [users, setUsers] = React.useState<SpeakerProps[]>([])
     return (
         <div className={styles.wrapper}>
             <div className="d-flex align-items-center justify-content-between">
@@ -24,7 +30,11 @@ export const Room: React.FC<RoomProps> = ({ title }) => {
                 </div>
             </div>
             <div className="users">
-
+                {
+                    users.map((obj) => (
+                        <Speaker {...obj} />
+                    ))
+                }
             </div>
         </div>
     );

@@ -3,12 +3,24 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import sharp from 'sharp'
 import fs from 'fs'
+import socket from 'socket.io'
 dotenv.config({  path: 'server/.env',})
 import { passport } from './core/passport'
 import AuthController from './controllers/AuthController'
 import RoomController from './controllers/RoomController'
 import { uploader } from './core/uploader'
+import { createServer } from 'http'
 const app = express()
+const server = createServer(app)
+const io = socket(server,{
+    cors:{
+        origin:'*'
+    }
+})
+
+io.on('connection',(socket)=>{
+
+})
 
 app.use(cors())
 app.use(express.json())
@@ -46,6 +58,6 @@ app.get(
     AuthController.authCallback
 )
 
-app.listen(3001, ()=>{
+server.listen(3001, ()=>{
     console.log('Server started');
 })

@@ -2,10 +2,15 @@ import { Api } from "../../api"
 import { BackButton } from "../../components/BackButton"
 import { Header } from "../../components/Header"
 import { Room } from "../../components/Room"
-import Axios from '../../core/axios'
 import { wrapper } from "../../redux/store"
 import { checkAuth } from "../../utils/checkAuth"
-export default function ProfilePage({ room }) {
+import io from 'socket.io-client'
+import React from "react"
+
+const socket = io('http://localhost:3001')
+
+export default function RoomPage({ room }) {
+
     return (
         <>
             <Header />
