@@ -9,9 +9,10 @@ import { checkAuth } from "../utils/checkAuth";
 import { Api } from "../api";
 import { GetServerSideProps, NextPage } from "next";
 import { useSelector } from "react-redux";
-import { selectRooms } from "../redux/slices/selectors";
+import { selectRooms } from "../redux/selectors";
 import { wrapper } from "../redux/store";
 import { setRooms } from "../redux/slices/roomsSlices";
+import { setUserData } from "../redux/slices/userSlice";
 
 const RoomsPage: NextPage = () => {
     const [visibleModal, setVisibleModal] = React.useState(false)

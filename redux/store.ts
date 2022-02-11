@@ -1,12 +1,15 @@
 import { combineReducers, configureStore, Store } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import { roomsReducer } from "./slices/roomsSlices";
+import { userSlice } from "./slices/userSlice";
+import { RootState } from "./types";
 
-const rootReducer = combineReducers({
-    rooms: roomsReducer
+export const rootReducer = combineReducers({
+    rooms: roomsReducer,
+    user: userSlice,
 })
 
-export type RootState = ReturnType<typeof rootReducer>
+
 
 export const makeStore = (): Store<RootState> => configureStore({reducer: rootReducer})
 

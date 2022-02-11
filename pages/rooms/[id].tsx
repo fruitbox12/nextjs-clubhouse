@@ -3,6 +3,8 @@ import { BackButton } from "../../components/BackButton"
 import { Header } from "../../components/Header"
 import { Room } from "../../components/Room"
 import Axios from '../../core/axios'
+import { wrapper } from "../../redux/store"
+import { checkAuth } from "../../utils/checkAuth"
 export default function ProfilePage({ room }) {
     return (
         <>
@@ -15,9 +17,18 @@ export default function ProfilePage({ room }) {
     )
 }
 
-export const getServerSideProps = async (ctx) => {
+export const getServerSideProps = wrapper.getServerSideProps(async (ctx) => {
     try {
-
+        const user = await checkAuth(ctx)
+        if (!user) {
+            return {
+                props: {},
+                redirect: {
+                    permanent: false,
+                    destination: '/'
+                }
+            }
+        }
         const roomId = ctx.query.id
         const room = await Api(ctx).getRoom(roomId)
         return {
@@ -35,4 +46,4 @@ export const getServerSideProps = async (ctx) => {
         }
 
     }
-}
+})
