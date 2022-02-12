@@ -9,6 +9,7 @@ import { Speaker, SpeakerProps } from '../Speaker';
 
 import styles from './Room.module.scss'
 import { UserData } from '../../pages';
+import { useSocket } from '../../hooks/useSocket';
 
 interface RoomProps {
     title: string;
@@ -19,25 +20,25 @@ export const Room: React.FC<RoomProps> = ({ title }) => {
     const roomId = router.query.id
     const user = useSelector(selectUserData)
     const [users, setUsers] = React.useState<UserData[]>([])
-    const socketRef = React.useRef<Socket>()
+    const socket = useSocket()
     React.useEffect(() => {
         if (typeof window !== 'undefined') {
-            socketRef.current = io('http://localhost:3001')
-            socketRef.current.emit('CLIENT@ROOMS:JOIN', {
+
+            socket.emit('CLIENT@ROOMS:JOIN', {
                 user,
                 roomId
             })
-            socketRef.current.on('SERVER@ROOMS:JOIN', users => {
+            socket.on('SERVER@ROOMS:JOIN', users => {
                 setUsers(users)
             })
-            socketRef.current.on('SERVER@ROOMS:LEAVE', (user: UserData) => {
+            socket.on('SERVER@ROOMS:LEAVE', (user: UserData) => {
                 setUsers(prev => prev.filter(obj => obj.id !== user.id))
             })
 
             setUsers(prev => [...prev, user])
         }
         return () => {
-            socketRef.current.disconnect()
+            socket.disconnect()
         }
     }, [])
 

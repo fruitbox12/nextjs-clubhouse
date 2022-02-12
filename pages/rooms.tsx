@@ -8,15 +8,23 @@ import { Header } from "../components/Header";
 import { checkAuth } from "../utils/checkAuth";
 import { Api } from "../api";
 import { GetServerSideProps, NextPage } from "next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectRooms } from "../redux/selectors";
 import { wrapper } from "../redux/store";
-import { setRooms } from "../redux/slices/roomsSlices";
-import { setUserData } from "../redux/slices/userSlice";
+import { setRooms, setRoomSpeakers } from "../redux/slices/roomsSlices";
+import { useSocket } from "../hooks/useSocket";
 
 const RoomsPage: NextPage = () => {
     const [visibleModal, setVisibleModal] = React.useState(false)
     const rooms = useSelector(selectRooms)
+    const socket = useSocket()
+    const dispatch = useDispatch()
+
+    React.useEffect(() => {
+        socket.on('CLIENT@ROOMS:HOME', (users) => {
+            dispatch(setRoomSpeakers(users))
+        })
+    }, [])
     return (
         <>
             <Head>
