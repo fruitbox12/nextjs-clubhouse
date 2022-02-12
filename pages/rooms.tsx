@@ -40,7 +40,6 @@ const RoomsPage: NextPage = () => {
                                     <ConversationCard
                                         title={obj.title}
                                         speakers={obj.speakers || []}
-                                        avatars={[]}
                                         listenersCount={obj.listenersCount}
                                     />
                                 </a>
