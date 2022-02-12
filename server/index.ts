@@ -23,7 +23,7 @@ const rooms: Record<string, any> = {}
 io.on('connection',(socket)=>{
     socket.on('CLIENT@ROOMS:JOIN',({user, roomId})=>{
         socket.join(`room/${roomId}`)
-        socket.to(`room/${roomId}`).emit('SERVER@ROOMS:JOIN',Object.values(rooms).filter((obj)=>obj.roomId ===roomId).map(obj => obj.user))
+        io.in(`room/${roomId}`).emit('SERVER@ROOMS:JOIN',Object.values(rooms).filter((obj)=>obj.roomId ===roomId).map(obj => obj.user))
         rooms[socket.id] = {roomId, user}
     })
 

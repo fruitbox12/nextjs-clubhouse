@@ -16,6 +16,7 @@ interface RoomProps {
 
 export const Room: React.FC<RoomProps> = ({ title }) => {
     const router = useRouter()
+    const roomId = router.query.id
     const user = useSelector(selectUserData)
     const [users, setUsers] = React.useState<UserData[]>([])
     const socketRef = React.useRef<Socket>()
@@ -24,7 +25,7 @@ export const Room: React.FC<RoomProps> = ({ title }) => {
             socketRef.current = io('http://localhost:3001')
             socketRef.current.emit('CLIENT@ROOMS:JOIN', {
                 user,
-                roomId: router.query.id
+                roomId
             })
             socketRef.current.on('SERVER@ROOMS:JOIN', users => {
                 setUsers(users)
