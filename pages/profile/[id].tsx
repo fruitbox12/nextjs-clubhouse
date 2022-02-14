@@ -1,6 +1,8 @@
 import { useRouter } from "next/router"
 import { Header } from "../../components/Header"
 import { Profile } from "../../components/Profile"
+import { wrapper } from "../../redux/store"
+import { checkAuth } from "../../utils/checkAuth"
 
 export default function ProfilePage() {
     const router = useRouter()
@@ -14,3 +16,21 @@ export default function ProfilePage() {
         </>
     )
 }
+
+
+export const getServerSideProps = wrapper.getServerSideProps(async (ctx) => {
+    try {
+        const user = await checkAuthuth(ctx)
+        if (!user) {
+            return {
+                props: {},
+                redirect: {
+                    permanent: false,
+                    destination: '/'
+                }
+            }
+        }
+    } catch (error) {
+
+    }
+})
