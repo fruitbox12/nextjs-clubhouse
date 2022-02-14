@@ -63,6 +63,7 @@ app.use(cors())
 app.use(express.json())
 app.use(passport.initialize())
 
+app.get('/user/:id',passport.authenticate('jwt',{session: false}), AuthController.getUserInfo)
 app.get('/rooms', passport.authenticate('jwt',{session: false}), RoomController.index)
 app.post('/rooms',passport.authenticate('jwt',{session: false}), RoomController.create)
 app.get('/rooms/:id',passport.authenticate('jwt',{session: false}), RoomController.show)

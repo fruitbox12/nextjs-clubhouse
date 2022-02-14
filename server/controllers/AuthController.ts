@@ -1,6 +1,6 @@
 import express from 'express'
 import { Axios } from '../../core/axios'
-import {Code,User} from '../../models'
+import {User} from '../../models'
 import { generateRandomCode } from '../../utils/generateRandomCode'
 
 class AuthController{
@@ -13,16 +13,16 @@ class AuthController{
     }
 
     async activate(req: express.Request, res: express.Response){
+        const {code, user} = req.body
+        const userId = req.user.id
+        if(!code){
+            return res.status(400).json({
+                message:'Введите код активации'
+            })
+        }
+        const whereQuery = {code, user_id: userId}
         try {
-            const {code, user} = req.body
-            const userId = req.user.id
-            if(!code){
-                return res.status(400).json({
-                    message:'Введите код активации'
-                })
-            }
-            const whereQuery = {code, user_id: userId}
-            const findCode = await Code.findOne({
+            const findCode = await User.findOne({
                 where: whereQuery
             })
             if(findCode){
@@ -36,6 +36,20 @@ class AuthController{
             }
         } catch (error) {
             res.status(500).json({message: 'Ошибка при активации'})
+        }
+    }
+
+    async getUserInfo(req: express.Request, res: express.Response){
+        const userId = req.params.id
+        try {
+            const findUser = await User.findByPk(userId)
+            if(findUser){
+                res.json( await findUser)
+            }else{
+                res.status(400).json({message: 'Пользователь не найден'})
+            }
+        } catch (error) {
+            res.status(500).json({message: 'Ошибка при поиске пользователя'})
         }
     }
 

@@ -17,7 +17,9 @@ export const Profile: React.FC<ProfileProps> = ({ fullname, username, avatarUrl,
     return (
         <>
             <Link href="/rooms">
-                <BackButton title="Back" href="/rooms" />
+                <a>
+                    <BackButton title="Back" href="/rooms" />
+                </a>
             </Link>
 
             <div className="d-flex flex-align-items-center">
